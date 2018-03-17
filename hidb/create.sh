@@ -13,19 +13,19 @@ cd ../databases
 
 
 function createDatabase{
-	if ! ls $2 2>/dev/null
+	if ! ls $1 2>/dev/null
 	then
-	   	mkdir "$2"
-	elif ls $2 >/dev/null
+	   	mkdir "$1"
+	elif ls $1 >/dev/null
 		echo "database already exists"
 	fi
 }
 
 function createTable{
-	if ! ls $2 2>/dev/null
+	if ! ls $1 2>/dev/null
 	then
-		touch "$2"
-	elif ls $2 >/dev/null
+		touch "$1"
+	elif ls $1 >/dev/null
 		echo "table already exist"
 	fi	
 }

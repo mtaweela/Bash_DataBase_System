@@ -21,32 +21,32 @@ function interactiveMode{
 }
 
 function commandLineMode{
-	while true
-		do
-				read -p "> " command
+while true
+	do
+		  read -p "> " command
 
-				#eval $command
+		  #eval $command
 
-				case $command in
-				    create*) 
-					./create.sh
-				        ;;
-				insert*) 
-					echo insert
-					;;
-				update*)
-					echo update
-					;;
-				delete*)
-					echo delete
-					;;
-				exit)
-					exit
-					;;
-				*)
-					echo "please revise the README file for right syntax"	
-					;;
-				esac
+		  case $command in
+		      create*) 
+				./create.sh
+		          ;;
+			insert*) 
+				echo insert
+				;;
+			update*)
+				echo update
+				;;
+			delete*)
+				echo delete
+				;;
+			exit)
+				exit
+				;;
+			*)
+				echo "please revise the README file for right syntax"	
+				;;
+		  esac
 	done
 }
 
