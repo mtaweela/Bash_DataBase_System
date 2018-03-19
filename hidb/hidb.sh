@@ -13,23 +13,30 @@ function interactiveMode {
 		select choice in "create database" "use existed database" "exit"
 		do
 			case $REPLY in
-				1) ./create.sh database
+				1) ./createDb.sh database
 					break ;;
 				2) ./use.sh
 					break ;;
-				3) exit
+				3) all_done=1
+					break
 					;;
 			esac
 		done
     done
 }
 
-select choice in "interactive mode" "exit (or press ctrl+c)"
-do
-    case $REPLY in
-       	1) interactiveMode
-        	;;
-         3) exit
-            ;;
-	esac    
+allDone=0
+while (( !allDone )); do
+	clear
+	select choice in "interactive mode" "exit (or press ctrl+c)"
+	do
+		case $REPLY in
+			1) interactiveMode
+				break;;
+			2) exit
+				;;
+			*) echo "Look, it's a simple choise..." 
+				;;
+		esac    
+	done
 done

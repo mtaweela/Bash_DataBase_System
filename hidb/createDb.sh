@@ -15,7 +15,7 @@ function createNewDB {
     all_done=0
     while (( !all_done )); do
         echo "Please Enter the name of the new database"
-        read dbNewName
+        read -p "> " dbNewName
         if cat ../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbNewName
         then
             echo "This database already exist"
@@ -43,7 +43,7 @@ function createDatabase {
                 1)  createNewDB ../databases
                     break ;;
                 2) echo "write the path for your new database"
-                    read dbNewPath
+                    read -p "> " dbNewPath
                     createNewDB $dbNewPath
                     break ;;
                 3) exit
