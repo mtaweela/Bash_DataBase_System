@@ -2,62 +2,33 @@
 
 echo "
     this is the highdb engine shell.
-    Enter the commands and hit enter to apply them
-    To exit press ctrl+c
+    Enter the number matching your choise and hit enter to apply them
+    To exit totaly, press ctrl+c
     "
 
-function interactiveMode{
-	select choice in "create database" "use existed database" "exit"
-	do
-    	case $REPLY in
-        	1) create.sh
-            	;;
-        	2) use.sh
-            	;;
-        	3) exit
-            	;;
-    	esac
-	done
-}
-
-function commandLineMode{
-	while true
+function interactiveMode {
+	all_done=0
+	while (( !all_done )); do
+		clear
+		select choice in "create database" "use existed database" "exit"
 		do
-				read -p "> " command
-
-				#eval $command
-
-				case $command in
-				    create*) 
-					./create.sh
-				        ;;
-				insert*) 
-					echo insert
+			case $REPLY in
+				1) ./create.sh database
+					break ;;
+				2) ./use.sh
+					break ;;
+				3) exit
 					;;
-				update*)
-					echo update
-					;;
-				delete*)
-					echo delete
-					;;
-				exit)
-					exit
-					;;
-				*)
-					echo "please revise the README file for right syntax"	
-					;;
-				esac
-	done
+			esac
+		done
+    done
 }
 
-
-select choice in "interactive mode" "command line mode" "exit (or press ctrl+c)"
+select choice in "interactive mode" "exit (or press ctrl+c)"
 do
     case $REPLY in
        	1) interactiveMode
         	;;
-        2) commandLineMode
-            ;;
          3) exit
             ;;
 	esac    
