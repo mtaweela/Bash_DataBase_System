@@ -1,0 +1,12 @@
+databases/
+meta/
+*.info
+#############
+*~
+Bugs_and_progress
+*.swp
+*.swo
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
