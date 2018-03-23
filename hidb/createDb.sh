@@ -3,12 +3,9 @@
 # This function is used to create database and table
 # the vraiable thing either contain table or database
 
-
-## check db exist
-## check table exist
-## 
-
-# this line should be removed where the use statment should declare where the database is
+#---------------------------#------------------------#
+# check the existence of the database
+# create new database
 
 function createNewDB {
     clear
@@ -25,6 +22,7 @@ function createNewDB {
             dbpath=`pwd`
             mkdir $dbNewName
             touch $dbNewName/tablesMeta
+            mkdir $dbNewName/data
             cd - >/dev/null
             echo $dbNewName:$dbpath >> ../meta/dbsInfo
             printf "database has been created \n \n"
@@ -32,6 +30,9 @@ function createNewDB {
         fi
     done
 }
+
+#---------------------------#------------------------#
+# list the options for creating database
 
 function createDatabase {
     all_done=0
@@ -51,7 +52,7 @@ function createDatabase {
             esac
         done
 
-        echo "Are we done with creating your database?"
+        echo "Are we done with creating your databases?"
             select opt in "Yes" "No"; do
                     case $REPLY in
                             1) all_done=1; 
@@ -63,17 +64,12 @@ function createDatabase {
     done
 }
 
-function createTable {
-    echo "create table1"
-}
-
+#---------------------------#------------------------#
+# start point
 
 if [ $1 = 'database'  ]
 then
 	createDatabase
-elif [ $1 = 'table'  ]
-then
-	createTable
 else
     echo "error in the sentax. Please see the README file for more information about how to use the function"
 fi
