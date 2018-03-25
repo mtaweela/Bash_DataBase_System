@@ -12,4 +12,5 @@ Bugs_and_progress
 .nfs*
 meta/dbsInfo
 hidb/Bugs_and_progress~
+hidb/test.sh
 databases/new/tablesMeta

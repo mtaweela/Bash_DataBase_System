@@ -24,18 +24,21 @@
 
 function setTableSpecs {
     all_done3=0
+    i=0
     while (( !all_done3 )); do
         clear
-        echo "Enter the new column name"
-        read  -p "> " colNmae
+        # echo "col $i "${colName[(($i-1))]},${pk[(($i-1))]},${nullness[(($i-1))]},${dType[(($i-1))]}
         
-        echo "Is the column values unique?"
+        echo "Enter the new column name"
+        read  -p "> " colName[i]  # check id is reserved and check for spaces & check if column exists
+        
+        echo "Are the column values unique?"
         select choice in "Yes" "No"
         do
             case $REPLY in
-                1)  pk=1
+                1)  pk[$i]=1
                     break ;;
-                2) pk=0
+                2)  pk[$i]=0
                     break ;;
             esac
         done
@@ -44,9 +47,9 @@ function setTableSpecs {
         select choice in "Yes" "No"
         do
             case $REPLY in
-                1) nullness=0
+                1) nullness[$i]=0
                     break ;;
-                2) nullness=1
+                2) nullness[$i]=1
                     break ;;
             esac
         done
@@ -55,9 +58,9 @@ function setTableSpecs {
         select choice in "String" "Number"
         do
             case $REPLY in
-                1)  dType=0
+                1)  dType[$i]=0
                     break ;;
-                2) dType=1
+                2) dType[$i]=1
                     break ;;
             esac
         done
@@ -66,13 +69,42 @@ function setTableSpecs {
         select choice in "Yes" "No"
         do
             case $REPLY in
-                1)  continue 2 ;; # could cause problem, need check
+                1)  ((i++))
+                    continue 2 ;; # could cause problem, need check
                 2)  break ;;
             esac
         done
 
-        echo "specify pk"
-        sleep 2
+        select choice in "Specify primery key" "Keep the default primary key"
+        do
+            case $REPLY in
+                1)  # check for the nullness and uniqness
+                    select opt in ${colName[*]}; do 
+                        case $REPLY in
+                            [1-${#colName[@]}]) echo "You picked $opt"
+                                IDpk=1 # this indicate that the ID is unique but not pk
+                                pk[$REPLY]=2
+                                break;;
+                            *) echo "Invalid option. Try another one." 
+                                continue;;
+                        esac
+                    done
+                    break ;;
+                2) IDpk=2 # indicate that the ID is pk
+                    break ;;
+            esac
+        done
+
+        # concatenate here
+        tSpecs=$tName"#ID:"$IDpk":1:1"
+
+        j=0
+        while ((j<${#colName[@]}))
+        do
+            tSpecs=$tSpecs";"${colName[$j]}":"${pk[$j]}":"${nullness[$j]}":"${dType[$j]}
+            ((j++))
+        done
+        echo $tSpecs >>$1/tablesMeta
 
         all_done3=1
     done
@@ -83,7 +115,6 @@ function setTableSpecs {
 
 function createTableFile {
     setTableSpecs $1
-    echo tSpecs >> $1/tablesMeta
     touch $1/data/$tName
     printf "table has been created \n \n"
 }
@@ -98,7 +129,7 @@ function checkTableExistence {
     while (( !all_done2 )); do
         echo "Please Enter the name of the new table"
         read -p "> " tName
-        if cat $1/tablesMeta | cut -d"{" -f1 | grep -q -w $tName
+        if cat $1/tablesMeta | cut -d"#" -f1 | grep -q -w $tName
         then
             echo "This table already exist"
         else
