@@ -7,7 +7,7 @@ function CRUD {
 	all_done=0
 	while (( !all_done )); do
 		clear
-		select choice in "Create table" "insert" "Update" "Delete" "Exit"
+		select choice in "Create table" "insert" "Update" "Delete" "Exit CRUD operations"
 		do
 		# $1 is the path to the database used
 			case $REPLY in

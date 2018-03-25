@@ -20,6 +20,40 @@
 
 
 #---------------------------#------------------------#
+# set the column name
+
+function setColName {
+    all_done4=0
+    echo "Enter the new column name"
+    while (( !all_done4 ))
+    do
+        read  -p "> "
+        if [[ $REPLY =~ [^a-zA-Z_0-9] ]]; then
+            echo "Sorry, you can use letters and numbers only in column name"
+        elif [[ -z $REPLY ]]
+        then
+            echo "You should secify name"
+        else
+            if [ "$REPLY" = "ID" ]
+            then
+                echo "ID is reserved keyword, PLease choose another word"
+            else
+                for var in ${colName[@]}
+                do
+                    if [ "$REPLY" = "$var" ]
+                    then
+                        echo "This column already exists, Enter another name"
+                        continue 2
+                    fi
+                done
+                colName[$1]=$REPLY # $1 here is the index i from the calling function
+                all_done4=1
+            fi
+        fi
+    done
+}
+
+#---------------------------#------------------------#
 # set the table properties and save them in the table meta file
 
 function setTableSpecs {
@@ -27,11 +61,8 @@ function setTableSpecs {
     i=0
     while (( !all_done3 )); do
         clear
-        # echo "col $i "${colName[(($i-1))]},${pk[(($i-1))]},${nullness[(($i-1))]},${dType[(($i-1))]}
-        
-        echo "Enter the new column name"
-        read  -p "> " colName[i]  # check id is reserved and check for spaces & check if column exists
-        
+        setColName $i
+
         echo "Are the column values unique?"
         select choice in "Yes" "No"
         do
@@ -128,14 +159,22 @@ function checkTableExistence {
     all_done2=0
     while (( !all_done2 )); do
         echo "Please Enter the name of the new table"
-        read -p "> " tName
-        if cat $1/tablesMeta | cut -d"#" -f1 | grep -q -w $tName
+        read -p "> "
+        if [[ $REPLY =~ [^a-zA-Z_0-9] ]]; then
+            echo "Sorry, you can use letters and numbers only in table name"
+        elif [[ -z $REPLY ]]
         then
-            echo "This table already exist"
+            echo "You should secify name"
         else
-            export tName
-            createTableFile $1
-            all_done2=1
+            if cat $1/tablesMeta | cut -d"#" -f1 | grep -q -w $REPLY
+            then
+                echo "This table already exists"
+            else
+                tName=$REPLY
+                export tName
+                createTableFile $1
+                all_done2=1
+            fi
         fi
     done
 }
@@ -143,9 +182,9 @@ function checkTableExistence {
 #---------------------------#------------------------#
 # set the table name
 
+# $1 is the database path
 function setTableName {
     all_done1=0
-# $1 is the database path
     while (( !all_done1 )); do
         clear
         select choice in "set table name" "exit"
@@ -159,7 +198,7 @@ function setTableName {
         done
 
         clear
-        select opt in "Create another table" "Exist table creation"; do
+        select opt in "Create another table" "Exit table creation"; do
                 case $REPLY in
                         1) break ;;
                         2) all_done1=1; 
@@ -173,5 +212,6 @@ function setTableName {
 #---------------------------#------------------------#
 # start point
 
+# $1 is the database path
 setTableName $1
 tSpecs="" 

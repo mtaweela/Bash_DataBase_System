@@ -11,20 +11,28 @@ function createNewDB {
     new_all_done=0
     while (( !new_all_done )); do
         echo "Please Enter the name of the new database"
-        read -p "> " dbNewName
-        if cat ../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbNewName
+        read -p "> "
+        if [[ $REPLY =~ [^a-zA-Z_0-9] ]]; then
+            echo "Sorry, you can use letters and numbers only in database name"
+        elif [[ -z $REPLY ]]
         then
-            echo "This database already exist"
+            echo "You should secify name"
         else
-            # create the database
-            cd $1
-            dbpath=`pwd`
-            mkdir $dbNewName
-            touch $dbNewName/tablesMeta
-            mkdir $dbNewName/data
-            cd - >/dev/null
-            echo $dbNewName:$dbpath >> ../meta/dbsInfo
-            new_all_done=1
+            dbNewName=$REPLY
+            if cat ../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbNewName
+            then
+                echo "This database already exist"
+            else
+                # create the database
+                cd $1
+                dbpath=`pwd`
+                mkdir $dbNewName
+                touch $dbNewName/tablesMeta
+                mkdir $dbNewName/data
+                cd - >/dev/null
+                echo $dbNewName:$dbpath >> ../meta/dbsInfo
+                new_all_done=1
+            fi
         fi
     done
 }
@@ -33,8 +41,8 @@ function createNewDB {
 # list the options for creating database
 
 function createDatabase {
-    all_done=0
-    while (( !all_done )); do
+    all_done1=0
+    while (( !all_done1 )); do
         clear
         select choice in "create in the default place" "specify database position" "exit create with out any action"
         do
@@ -54,7 +62,7 @@ function createDatabase {
        select opt in "Create another database" "exit Create"; do
                 case $REPLY in
                         1)  break;;
-                        2) all_done=1 
+                        2) all_done1=1 
                             break ;;
                         *) echo "Look, it's a simple question..." ;;
                 esac
