@@ -15,13 +15,13 @@ function CRUD {
 					break ;;
 				2) ./insert.sh $1
 					break ;;
-				2) ./update.sh $1
+				3) ./update.sh $1
 					sleep 2
 					break ;;
-				3) ./delete.sh $1
+				4) ./delete.sh $1
 					sleep 2
 					break ;;
-				4) exit
+				5) exit
 					;;
 			esac
 		done

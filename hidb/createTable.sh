@@ -1,47 +1,63 @@
 #!/bin/bash
 
-# This function is used to create database and table
-# the vraiable thing either contain table or database
+# This script is used to create table
+
+# $1 usually has the path for the database
+
+# table name and its columns will be stored in the following form
+# tableName#ColumnName:pk:null:dataType
+# columnName : string has the column name
+# pk : number that could be 0 or1 or 2 
+#       0 --> not unique
+#       1 --> unique
+#       2 --> primary key
+# null : either 1 or 0
+#       0 --> could be null
+#       1 --> not null
+# datatype : either 0 or 1
+#       0 --> string 
+#       1 --> number
+
 
 #---------------------------#------------------------#
-# set the table properties
+# set the table properties and save them in the table meta file
 
 function setTableSpecs {
-    all_done=0
-    while (( !all_done )); do
+    all_done3=0
+    while (( !all_done3 )); do
         clear
-        echo "enter the new column name"
-        read colNmae
+        echo "Enter the new column name"
+        read  -p "> " colNmae
         
-        echo "are the column values unique"
+        echo "Is the column values unique?"
         select choice in "Yes" "No"
         do
             case $REPLY in
-                1)  unique=1
+                1)  pk=1
                     break ;;
-                2) unique=0
+                2) pk=0
                     break ;;
             esac
         done
 
-        echo "are the column values not null"
+        echo "could the column values be null?"
         select choice in "Yes" "No"
         do
             case $REPLY in
-                1)  notNull=1
+                1) nullness=0
                     break ;;
-                2) notNull=0
+                2) nullness=1
                     break ;;
             esac
         done
 
-        echo "what is the data type of the column?"
+        echo "Choose data type for the column"
         select choice in "String" "Number"
         do
             case $REPLY in
-                1)  dType=s
+                1)  dType=0
                     break ;;
-                2) dType=n
+                2) dType=1
                     break ;;
             esac
         done
@@ -50,7 +66,7 @@ function setTableSpecs {
         select choice in "Yes" "No"
         do
             case $REPLY in
-                1)  continue 2 ;;
+                1)  continue 2 ;; # could cause problem, need check
                 2)  break ;;
             esac
         done
@@ -58,15 +74,7 @@ function setTableSpecs {
         echo "specify pk"
         sleep 2
 
-        # echo "Do you need to add another column?"
-        # select choice in "Yes" "No"
-        # do
-        #     case $REPLY in
-        #         1)  break
-        #             break ;;
-        #         2)  break ;;
-        #     esac
-        # done
+        all_done3=1
     done
 }
 
@@ -74,10 +82,10 @@ function setTableSpecs {
 # create table file and call setTableSpecs function
 
 function createTableFile {
-    echo $tName"{}" >> $1/tablesMeta
+    setTableSpecs $1
+    echo tSpecs >> $1/tablesMeta
     touch $1/data/$tName
     printf "table has been created \n \n"
-    setTableSpecs $1
 }
 
 #---------------------------#------------------------#
@@ -86,8 +94,8 @@ function createTableFile {
 # $1 is the database path
 function checkTableExistence {
     clear
-    all_done=0
-    while (( !all_done )); do
+    all_done2=0
+    while (( !all_done2 )); do
         echo "Please Enter the name of the new table"
         read -p "> " tName
         if cat $1/tablesMeta | cut -d"{" -f1 | grep -q -w $tName
@@ -96,7 +104,7 @@ function checkTableExistence {
         else
             export tName
             createTableFile $1
-            all_done=1
+            all_done2=1
         fi
     done
 }
@@ -105,9 +113,9 @@ function checkTableExistence {
 # set the table name
 
 function setTableName {
-    all_done=0
+    all_done1=0
 # $1 is the database path
-    while (( !all_done )); do
+    while (( !all_done1 )); do
         clear
         select choice in "set table name" "exit"
         do
@@ -119,15 +127,15 @@ function setTableName {
             esac
         done
 
-        echo "Do you want to create another table?"
-            select opt in "Yes" "No"; do
-                    case $REPLY in
-                            1) all_done=1; 
-                                break ;;
-                            2) break ;;
-                            *) echo "Look, it's a simple question..." ;;
-                    esac
-            done
+        clear
+        select opt in "Create another table" "Exist table creation"; do
+                case $REPLY in
+                        1) break ;;
+                        2) all_done1=1; 
+                            break ;;
+                        *) echo "Look, it's a simple question..." ;;
+                esac
+        done
     done
 }
 
@@ -135,3 +143,4 @@ function setTableName {
 # start point
 
 setTableName $1
+tSpecs="" 

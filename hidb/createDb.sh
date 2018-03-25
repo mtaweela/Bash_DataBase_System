@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# This function is used to create database and table
-# the vraiable thing either contain table or database
+# This script is used to create table
 
 #---------------------------#------------------------#
 # check the existence of the database
@@ -9,8 +8,8 @@
 
 function createNewDB {
     clear
-    all_done=0
-    while (( !all_done )); do
+    new_all_done=0
+    while (( !new_all_done )); do
         echo "Please Enter the name of the new database"
         read -p "> " dbNewName
         if cat ../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbNewName
@@ -25,8 +24,7 @@ function createNewDB {
             mkdir $dbNewName/data
             cd - >/dev/null
             echo $dbNewName:$dbpath >> ../meta/dbsInfo
-            printf "database has been created \n \n"
-            all_done=1
+            new_all_done=1
         fi
     done
 }
@@ -38,7 +36,7 @@ function createDatabase {
     all_done=0
     while (( !all_done )); do
         clear
-        select choice in "create in the default place" "add your database position" "exit create with out any action"
+        select choice in "create in the default place" "specify database position" "exit create with out any action"
         do
             case $REPLY in
                 1)  createNewDB ../databases
@@ -47,20 +45,20 @@ function createDatabase {
                     read -p "> " dbNewPath
                     createNewDB $dbNewPath
                     break ;;
-                3) exit
-                    break ;;
+                3) exit ;;
             esac
         done
 
-        echo "Are we done with creating your databases?"
-            select opt in "Yes" "No"; do
-                    case $REPLY in
-                            1) all_done=1; 
-                                break ;;
-                            2) break ;;
-                            *) echo "Look, it's a simple question..." ;;
-                    esac
-            done
+        clear
+        printf "database has been created \n \n"
+       select opt in "Create another database" "exit Create"; do
+                case $REPLY in
+                        1)  break;;
+                        2) all_done=1 
+                            break ;;
+                        *) echo "Look, it's a simple question..." ;;
+                esac
+        done
     done
 }
 

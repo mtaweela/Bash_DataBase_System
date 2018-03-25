@@ -4,7 +4,8 @@
 	-- list the existing database
 	
 # create table
-
+	* check the table name does not contain ; , { } @ # $ % ^ & * ( ) [ ] ~ ` / < >
+	* table and column name should not be space
 # insert
 
 # update

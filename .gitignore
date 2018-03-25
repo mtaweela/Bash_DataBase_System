@@ -1,7 +1,7 @@
 databases/
 meta/
 *.info
-#############
+
 *~
 Bugs_and_progress
 *.swp
@@ -10,3 +10,6 @@ Bugs_and_progress
 .directory
 .Trash-*
 .nfs*
+meta/dbsInfo
+hidb/Bugs_and_progress~
+databases/new/tablesMeta
