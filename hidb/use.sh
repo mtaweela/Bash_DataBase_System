@@ -11,14 +11,14 @@ function CRUD {
 		do
 		# $1 is the path to the database used
 			case $REPLY in
-				1) ./createTable.sh $1
+				1) bash $SCRIPT_PATH/createTable.sh $1
 					break ;;
-				2) ./insert.sh $1
+				2) bash $SCRIPT_PATH/insert.sh $1
 					break ;;
-				3) ./update.sh $1
+				3) bash $SCRIPT_PATH/update.sh $1
 					sleep 2
 					break ;;
-				4) ./delete.sh $1
+				4) bash $SCRIPT_PATH/delete.sh $1
 					sleep 2
 					break ;;
 				5) exit
@@ -33,6 +33,8 @@ function CRUD {
 # make sure the database exist
 # then, access the database if exist
 
+SCRIPT_PATH=$(dirname `which $0`)
+
 all_done=0
 clear
 while (( !all_done )); do
@@ -40,11 +42,11 @@ while (( !all_done )); do
 	echo "enter name of database you want to use"
 	read -p "> " dbName
 	
-	if cat ../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbName
+	if cat $SCRIPT_PATH/../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbName
 	then
-		if [ -d `cat ../meta/dbsInfo | grep -w $dbName: |cut -d":" -f2`/$dbName ]
+		if [ -d `cat $SCRIPT_PATH/../meta/dbsInfo | grep -w $dbName: |cut -d":" -f2`/$dbName ]
 		then
-			CRUD `cat ../meta/dbsInfo | grep -w $dbName: |cut -d":" -f2`/$dbName
+			CRUD `cat $SCRIPT_PATH/../meta/dbsInfo | grep -w $dbName: |cut -d":" -f2`/$dbName
 			break
 		else
 			echo "

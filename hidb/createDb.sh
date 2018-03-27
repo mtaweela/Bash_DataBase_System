@@ -19,7 +19,7 @@ function createNewDB {
             echo "You should secify name"
         else
             dbNewName=$REPLY
-            if cat ../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbNewName
+            if cat $SCRIPT_PAT/../meta/dbsInfo | cut -d":" -f1 | grep -q -w $dbNewName
             then
                 echo "This database already exist"
             else
@@ -30,7 +30,7 @@ function createNewDB {
                 touch $dbNewName/tablesMeta
                 mkdir $dbNewName/data
                 cd - >/dev/null
-                echo $dbNewName:$dbpath >> ../meta/dbsInfo
+                echo $dbNewName:$dbpath >> $SCRIPT_PAT/../meta/dbsInfo
                 new_all_done=1
             fi
         fi
@@ -47,7 +47,7 @@ function createDatabase {
         select choice in "create in the default place" "specify database position" "exit create with out any action"
         do
             case $REPLY in
-                1)  createNewDB ../databases
+                1)  createNewDB $SCRIPT_PAT/../databases
                     break ;;
                 2) echo "write the path for your new database"
                     read -p "> " dbNewPath
@@ -72,6 +72,8 @@ function createDatabase {
 
 #---------------------------#------------------------#
 # start point
+
+SCRIPT_PATH=$(dirname `which $0`)
 
 if [ $1 = 'database'  ]
 then

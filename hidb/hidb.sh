@@ -7,9 +7,9 @@ function interactiveMode {
 		select choice in "Create database" "Use existed database" "Exit the hidb database"
 		do
 			case $REPLY in
-				1) ./createDb.sh database
+				1) bash $SCRIPT_PATH/createDb.sh database
 					break ;;
-				2) ./use.sh
+				2) bash $SCRIPT_PATH/use.sh
 					break ;;
 				3) exit
 					break
@@ -21,6 +21,8 @@ function interactiveMode {
 
 #---------------------------#------------------------#
 # start point
+
+SCRIPT_PATH=$(dirname `which $0`)
 
 allDone=0
 while (( !allDone )); do

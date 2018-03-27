@@ -136,7 +136,7 @@ function setTableSpecs {
             ((j++))
         done
         echo $tSpecs >>$1/tablesMeta
-
+        colName=()
         all_done3=1
     done
 }
